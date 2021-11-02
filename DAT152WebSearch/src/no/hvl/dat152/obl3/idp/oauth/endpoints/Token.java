@@ -174,6 +174,11 @@ public class Token extends HttpServlet {
 		String webpath = getServletContext().getRealPath("WEB-INF/");
 
 		boolean refresh_token_valid = TokenSingleton.Instance().refreshTokenExist(refresh_token.trim());
+		TokenSingleton temp = TokenSingleton.Instance();
+		temp.getAuthCode();
+		temp.getOpenIDUser(clientId);
+		temp.getOpenIDUserMap();
+		temp.getUserClientIDs();
 		if(refresh_token_valid) {
 
 			// generate a new access_token

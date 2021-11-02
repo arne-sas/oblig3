@@ -5,52 +5,69 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.*;
+import java.sql.*;
 
 import no.hvl.dat152.obl3.util.Crypto;
 
 
 public class AppUserDAO {
 
-  public AppUser getAuthenticatedUser(String username, String password) {
+	public AppUser getAuthenticatedUser(String username, String password)
+	{
+	    String hashedPassword = Crypto.generateMD5Hash(password);
+	    
+	    Pattern pattern = Pattern.compile("^[A-Za-z0-9]+$");
+	    Matcher match = pattern.matcher(username);
+	    boolean isUsernameCorrect = match.matches();
+	    
+	    AppUser user = null;
+	
+	    Connection c = null;
+	    PreparedStatement ps = null;
+	    ResultSet rs = null;
+	
+	    try 
+	    {  
+			if(isUsernameCorrect)
+			{
+				c = DatabaseHelper.getConnection();
+				ps = c.prepareStatement("SELECT * FROM SecOblig.AppUser WHERE username = ? AND passhash = ?");
+				ps.setString(1, username);
+				ps.setString(2, hashedPassword);
+				rs = ps.executeQuery();
+				if (rs.next())
+				{
+					  user = new AppUser(
+					      rs.getString("username"),
+					      rs.getString("passhash"),
+					      rs.getString("firstname"),
+					      rs.getString("lastname"),
+					      rs.getString("mobilephone"),
+					      rs.getString("role"),
+					      rs.getString("clientId")
+					      );
+				}
+			}
+	    	else
+	    	{
+	    		System.out.println("Username format is not correct.");
+	    	}
+	    
+		
+	    }
+	    catch (Exception e)
+	    {
+		  System.out.println(e);
+		} 
+	    finally
+	    {
+		  DatabaseHelper.closeConnection(rs, ps, c);
+		}
+		
+		return user;
+	}
 
-    String hashedPassword = Crypto.generateMD5Hash(password);
-
-    String sql = "SELECT * FROM SecOblig.AppUser" 
-        + " WHERE username = '" + username + "'"
-        + " AND passhash = '" + hashedPassword + "'";
-    
-    
-    AppUser user = null;
-
-    Connection c = null;
-    Statement s = null;
-    ResultSet r = null;
-
-    try {        
-      c = DatabaseHelper.getConnection();
-      s = c.createStatement();       
-      r = s.executeQuery(sql);
-
-      if (r.next()) {
-        user = new AppUser(
-            r.getString("username"),
-            r.getString("passhash"),
-            r.getString("firstname"),
-            r.getString("lastname"),
-            r.getString("mobilephone"),
-            r.getString("role"),
-            r.getString("clientId")
-            );
-      }
-
-    } catch (Exception e) {
-      System.out.println(e);
-    } finally {
-      DatabaseHelper.closeConnection(r, s, c);
-    }
-
-    return user;
-  }
   
   public String getUserClientID(String mobilephone) {
 
