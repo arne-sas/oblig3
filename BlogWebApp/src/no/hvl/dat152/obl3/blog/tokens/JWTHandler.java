@@ -20,6 +20,8 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.SignatureException;
+//import no.hvl.dat152.obl3.util.TokenSingleton;
+
 
 /**
  * @author tdoy

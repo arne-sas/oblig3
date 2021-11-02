@@ -36,7 +36,7 @@
 <input type="hidden" name="scope" value="openid phone profile">
 <input type="hidden" name="client_id" id="clientID">
 <input type="hidden" name="state" value=<%=Constants.STATE %>>
-<input type="hidden" name="redirect_uri" value=<%=Constants.CALLBACK_ADDRESS %>>
+<input type="hidden" name="redirect_uri" value="http://localhost:8080/blogapp/callback">
 <input type=submit value="SSO:Login with DAT152WebSearch">
 </div>
 </form>

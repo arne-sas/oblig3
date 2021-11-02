@@ -22,7 +22,7 @@
 		String role = "";
 		
 		String pubkeypath = application.getRealPath("/WEB-INF/");
-		boolean validSession = RequestHelper.isLoggedInSSO(id_token);
+		boolean validSession = RequestHelper.isLoggedInSSO(id_token, pubkeypath);
 		
 		if(!validSession){
 			request.setAttribute("message", "Session timed out or invalid SSO auth token");
@@ -79,7 +79,7 @@
 			<p><b>You are logged in as <%=user %>. <a href="logout">Log out</a></b></p>
 			<form method="post" action=<%=Constants.IDP_LOGOUT_ENDPOINT %> >
 			<input type="hidden" name="client_id" value=<%=Constants.CLIENT_ID %>>
-			<input type="hidden" name="redirect_uri" value=<%=Constants.CALLBACK_ADDRESS %>>
+			<input type="hidden" name="redirect_uri" value="http://localhost:8080/blogapp/callback">
 			<input type=submit value="SSO:Logout">
 			</form>
 <%			

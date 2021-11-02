@@ -44,8 +44,12 @@ public class SSOForwarder extends HttpServlet {
 		
 		// add the auth token to be forwarded to the IdP for verification
 		Cookie id_token = RequestHelper.getCookie(request, "id_token");
-		id_token.setPath(Constants.IDP_PATH);
-		response.addCookie(id_token);
+		if(id_token != null)
+		{
+			id_token.setPath(Constants.IDP_PATH);
+			response.addCookie(id_token);
+			
+		}
 		response.sendRedirect(ssourl);
 	}
 
